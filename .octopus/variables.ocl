@@ -1,0 +1,5 @@
+variable "Var 1" {
+    value {}
+
+    value {}
+}
