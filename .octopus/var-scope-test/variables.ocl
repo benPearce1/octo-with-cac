@@ -1,0 +1,59 @@
+variable "asdf" {
+    value {
+        prompt {
+            description = "asdf"
+            display_settings = {
+                Octopus.ControlType = "MultiLineText"
+                Octopus.SelectOptions = "value1|display 1"
+            }
+            label = "asdf"
+        }
+    }
+}
+
+variable "az" {
+    type = "AzureAccount"
+
+    value "azure-dev-playground" {}
+}
+
+variable "var1" {
+    value "value1" {
+        environment = ["dev"]
+    }
+
+    value "value3" {
+        environment = ["dev"]
+    }
+
+    value "value0" {
+        description = "value 0 description"
+        environment = ["dev"]
+    }
+
+    value "value4" {
+        environment = ["dev"]
+    }
+}
+
+variable "workerpool" {
+    type = "WorkerPool"
+
+    value "default-worker-pool" {}
+
+    value "windows-2016" {
+        description = ""
+    }
+}
+
+variable "workerpool prompt" {
+    type = "WorkerPool"
+
+    value "win-default" {
+        prompt {
+            description = ""
+            label = "worker pool"
+            required = true
+        }
+    }
+}
