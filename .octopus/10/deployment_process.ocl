@@ -7,6 +7,8 @@ step "run-a-script" {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 
                 write-host $OctopusParameters["Octopus.Action.Package[hello-world].Image"]
+                
+                
                 EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
