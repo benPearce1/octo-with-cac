@@ -4,10 +4,35 @@ step "run-a-script" {
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.Script.ScriptBody = "sadf"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                
+                write-host $OctopusParameters["Octopus.Action.Package[hello-world].Image"]
+                EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
         }
         worker_pool = "default-worker-pool"
+
+        packages "TestWebApp" {
+            acquisition_location = "Server"
+            feed = "octopus-server-built-in"
+            package_id = "TestWebApp"
+            properties = {
+                Extract = "True"
+                Purpose = ""
+                SelectionMode = "immediate"
+            }
+        }
+
+        packages "hello-world" {
+            acquisition_location = "ExecutionTarget"
+            feed = "docker-hub"
+            package_id = "hello-world"
+            properties = {
+                Extract = "False"
+                Purpose = ""
+                SelectionMode = "immediate"
+            }
+        }
     }
 }
