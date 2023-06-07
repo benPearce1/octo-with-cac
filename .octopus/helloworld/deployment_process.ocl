@@ -3,6 +3,7 @@ step "hello-world-using-powershell" {
 
     action {
         action_type = "Octopus.Script"
+        channels = ["second"]
         is_required = true
         properties = {
             Octopus.Action.RunOnServer = "true"
