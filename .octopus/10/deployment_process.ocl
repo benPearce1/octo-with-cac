@@ -51,3 +51,16 @@ step "asdf" {
         worker_pool = "default-worker-pool"
     }
 }
+
+step "create-cache-schema-indexes" {
+    name = "Create Cache Schema Indexes"
+
+    action {
+        properties = {
+            BASTION_CONNECTION_STRING = "asdfas"
+            Octopus.Action.Template.Id = "ActionTemplates-23"
+            Octopus.Action.Template.Version = "0"
+        }
+        worker_pool = "default-worker-pool"
+    }
+}
