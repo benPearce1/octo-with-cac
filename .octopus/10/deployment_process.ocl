@@ -28,7 +28,7 @@ step "run-a-script" {
 
         packages "hello-world" {
             acquisition_location = "ExecutionTarget"
-            feed = "docker-hub"
+            feed = "nuget"
             package_id = "hello-world"
             properties = {
                 Extract = "False"
