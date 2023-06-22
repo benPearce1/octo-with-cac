@@ -46,7 +46,7 @@ step "asdf" {
     action {
         properties = {
             Octopus.Action.Template.Id = "ActionTemplates-1"
-            Octopus.Action.Template.Version = "0"
+            Octopus.Action.Template.Version = "17"
         }
         worker_pool = "default-worker-pool"
     }
