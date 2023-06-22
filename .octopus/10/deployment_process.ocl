@@ -64,3 +64,19 @@ step "create-cache-schema-indexes" {
         worker_pool = "default-worker-pool"
     }
 }
+
+step "asdf-2" {
+    name = "ASDF 2"
+    properties = {
+        Octopus.Action.TargetRoles = "cloud-region"
+    }
+
+    action {
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Template.Id = "ActionTemplates-1"
+            Octopus.Action.Template.Version = "17"
+        }
+        worker_pool_variable = ""
+    }
+}
