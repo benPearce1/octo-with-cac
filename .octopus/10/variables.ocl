@@ -5,3 +5,7 @@ variable "OctopusPrintVariables" {
 variable "newvar" {
     value "newvalue" {}
 }
+
+variable "branch var" {
+    value "branch value" {}
+}
