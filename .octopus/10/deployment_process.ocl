@@ -75,7 +75,7 @@ step "asdf-2" {
         properties = {
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Template.Id = "ActionTemplates-1"
-            Octopus.Action.Template.Version = "17"
+            Octopus.Action.Template.Version = "37"
         }
         worker_pool_variable = ""
     }
