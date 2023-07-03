@@ -7,5 +7,5 @@ variable "newvar" {
 }
 
 variable "branch var" {
-    value "branch value" {}
+    value "branch value 2" {}
 }
