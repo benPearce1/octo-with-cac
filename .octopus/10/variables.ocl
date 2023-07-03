@@ -9,3 +9,7 @@ variable "newvar" {
 variable "branch var" {
     value "branch value 2" {}
 }
+
+variable "branch-only" {
+    value "value" {}
+}
