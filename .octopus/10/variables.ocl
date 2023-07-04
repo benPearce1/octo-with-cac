@@ -28,7 +28,7 @@ variable "another new value" {
         environment = ["dev"]
     }
 
-    value "dev 2 value 2" {
+    value "dev 2 value 3" {
         description = ""
         environment = ["dev-2"]
     }
