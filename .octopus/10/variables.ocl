@@ -11,5 +11,13 @@ variable "branch var" {
 }
 
 variable "another new value" {
-    value "asdfasdf" {}
+    value "asdfasdf" {
+        environment = ["dev"]
+    }
+}
+
+variable "var via cli" {
+    value "value" {
+        description = ""
+    }
 }
