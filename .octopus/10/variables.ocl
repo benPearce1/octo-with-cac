@@ -10,12 +10,6 @@ variable "OctopusPrintVariables" {
     }
 }
 
-variable "newvar" {
-    value "newvalue" {
-        description = ""
-    }
-}
-
 variable "branch var" {
     value "branch value" {
         description = ""
@@ -31,5 +25,11 @@ variable "another new value" {
     value "dev 2 value 3" {
         description = ""
         environment = ["dev-2"]
+    }
+}
+
+variable "newvar" {
+    value "newvalue2" {
+        description = ""
     }
 }
