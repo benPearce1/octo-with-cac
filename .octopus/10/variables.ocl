@@ -26,6 +26,11 @@ variable "another new value" {
         description = ""
         environment = ["dev-2"]
     }
+
+    value "prod value" {
+        description = ""
+        environment = ["production"]
+    }
 }
 
 variable "newvar" {
@@ -36,6 +41,12 @@ variable "newvar" {
 
 variable "gitvar" {
     value "gitvalue" {
+        description = ""
+    }
+}
+
+variable "dbvar" {
+    value "dbvalue" {
         description = ""
     }
 }
