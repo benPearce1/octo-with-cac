@@ -33,3 +33,9 @@ variable "newvar" {
         description = ""
     }
 }
+
+variable "gitvar" {
+    value "gitvalue" {
+        description = ""
+    }
+}
