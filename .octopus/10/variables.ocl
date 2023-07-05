@@ -13,3 +13,7 @@ variable "branch var" {
 variable "branch-only" {
     value "value" {}
 }
+
+variable "another branch var" {
+    value "asdfasdfasdf" {}
+}
