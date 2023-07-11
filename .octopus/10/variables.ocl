@@ -39,3 +39,9 @@ variable "gitvar" {
         description = ""
     }
 }
+
+variable "gitvar-another-branch" {
+    value "gitvalue" {
+        description = ""
+    }
+}
