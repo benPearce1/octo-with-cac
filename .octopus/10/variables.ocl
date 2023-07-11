@@ -39,3 +39,7 @@ variable "gitvar" {
         description = ""
     }
 }
+
+variable "asdf" {
+    value "asdf" {}
+}
