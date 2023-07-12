@@ -43,3 +43,12 @@ variable "gitvar" {
 variable "newvar-newbranch" {
     value "value" {}
 }
+
+variable "prompted" {
+    value {
+        prompt {
+            description = ""
+            label = ""
+        }
+    }
+}
