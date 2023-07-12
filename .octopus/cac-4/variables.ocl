@@ -1,0 +1,3 @@
+variable "octo.package.name" {
+    value "app" {}
+}
