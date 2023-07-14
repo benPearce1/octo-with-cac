@@ -52,3 +52,7 @@ variable "prompted" {
         }
     }
 }
+
+variable "branch var 2" {
+    value {}
+}
