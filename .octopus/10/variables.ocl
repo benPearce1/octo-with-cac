@@ -56,3 +56,7 @@ variable "prompted" {
 variable "branch var 2" {
     value {}
 }
+
+variable "plain 2" {
+    value "asdfasd" {}
+}
