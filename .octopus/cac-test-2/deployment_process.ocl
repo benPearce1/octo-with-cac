@@ -14,6 +14,7 @@ step "hello-world-using-powershell" {
                 Write-Host '[Learn more about the types of steps available in Octopus](https://oc.to/OnboardingAddStepsLearnMore)'
                 
                 asfsd
+                cac-test-3
                 EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "PowerShell"
