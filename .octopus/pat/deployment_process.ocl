@@ -1,5 +1,5 @@
-step "run-a-script" {
-    name = "Run a Script"
+step "run-a-script-2" {
+    name = "Run a Script 2"
 
     action {
         action_type = "Octopus.Script"
@@ -12,8 +12,8 @@ step "run-a-script" {
     }
 }
 
-step "run-a-script-2" {
-    name = "Run a Script 2"
+step "run-a-script" {
+    name = "Run a Script"
 
     action {
         action_type = "Octopus.Script"
