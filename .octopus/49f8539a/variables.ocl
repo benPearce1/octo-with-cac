@@ -1,0 +1,62 @@
+variable "aws" {
+    type = "AmazonWebServicesAccount"
+
+    value "aws-oidc" {
+        description = ""
+    }
+}
+
+variable "blah" {
+    value {
+        process = ["runbook/blah"]
+
+        prompt {
+            description = ""
+            label = ""
+        }
+    }
+}
+
+variable "OctopusPrintVariables" {
+    value "true" {
+        description = ""
+    }
+}
+
+variable "Project.EFS.SG" {
+    value "value-abcd" {
+        description = ""
+    }
+}
+
+variable "Project.EFS.SG.Copy" {
+    value "value234" {
+        description = ""
+    }
+
+    value "value2345" {
+        description = ""
+    }
+}
+
+variable "Project.EFS.SG.Copy.2" {
+    value "value234" {
+        description = ""
+    }
+
+    value "value234" {
+        description = ""
+    }
+}
+
+variable "Project.EFS.SG.Copy.3" {
+    value "value2345" {
+        description = ""
+    }
+}
+
+variable "prompted variable" {
+    value {
+        process = ["runbook/blah"]
+    }
+}
