@@ -34,6 +34,7 @@ step "deploy-kubernetes-containers" {
             Octopus.Action.KubernetesContainers.ConfigMapValues = "{}"
             Octopus.Action.KubernetesContainers.HostAliases = "[]"
             Octopus.Action.KubernetesContainers.RevisionHistoryLimit = "10"
+            Octopus.Action.KubernetesContainers.IngressRules = "[{\"host\":\"#{FQDN}\",\"http\":{\"paths\":[{\"key\":\"/\",\"value\":\"http\",\"option\":\"\",\"option2\":\"ImplementationSpecific\"}]}}]",
         }
         worker_pool_variable = ""
 
