@@ -31,18 +31,6 @@ variable "FQDN" {
     }
 }
 
-variable "Namespace" {
-    value "team-#{Octopus.ProjectGroup.Name | ToLower }" {
-        prompt {
-            description = ""
-            display_settings = {
-                Octopus.ControlType = "SingleLineText"
-            }
-            label = ""
-        }
-    }
-}
-
 variable "ServiceName" {
     value {
         prompt {
@@ -58,6 +46,18 @@ variable "HPAEnabled" {
             description = ""
             display_settings = {
                 Octopus.ControlType = "Checkbox"
+            }
+            label = ""
+        }
+    }
+}
+
+variable "Namespace" {
+    value "team-#{Octopus.ProjectGroup.Id | ToLower }" {
+        prompt {
+            description = ""
+            display_settings = {
+                Octopus.ControlType = "SingleLineText"
             }
             label = ""
         }
