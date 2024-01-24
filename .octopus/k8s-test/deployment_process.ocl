@@ -54,47 +54,6 @@ step "deploy-kubernetes-containers" {
                 #{each var in Sec}
                   #{var}: "#{var.Value | ToBase64}"
                 #{/each}
-                ---
-                apiVersion: cilium.io/v2
-                kind: CiliumNetworkPolicy
-                metadata:
-                  name: '#{ServiceName | ToLower}'
-                  namespace: '#{Namespace}'
-                spec:
-                  endpointSelector:
-                    matchLabels:
-                      Octopus.Kubernetes.DeploymentName: #{ServiceName | ToLower}
-                      Octopus.Deployment.Id: #{Octopus.Deployment.Id}
-                  egress:
-                #{each var in FwFQDN}
-                    - toFQDNs:
-                #{each fqdn in var.Value}
-                        - matchName: #{fqdn}
-                #{/each}
-                      toPorts:
-                        - ports:
-                            - port: "#{var}"
-                              protocol: TCP
-                 #{/each}
-                    - toServices:
-                        - k8sServiceSelector:
-                            selector:
-                              matchExpressions:
-                                - key: Octopus.Kubernetes.DeploymentName
-                                  operator: Exists
-                                  values: []
-                            namespace: "*"
-                    - toEndpoints:
-                        - matchLabels:
-                            io.kubernetes.pod.namespace: kube-system
-                            k8s-app: kube-dns
-                      toPorts:
-                        - ports:
-                            - port: "53"
-                              protocol: UDP
-                          rules:
-                            dns:
-                              - matchPattern: "*"
                 #{if HPAEnabled}
                 ---
                 apiVersion: autoscaling/v2
