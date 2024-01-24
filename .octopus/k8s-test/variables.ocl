@@ -34,15 +34,6 @@ variable "Namespace" {
     }
 }
 
-variable "FQDN" {
-    value "fqdn-#{Octopus.Deployment.Id}" {
-        prompt {
-            description = ""
-            label = ""
-        }
-    }
-}
-
 variable "HPAEnabled" {
     value "true" {
         prompt {
@@ -66,4 +57,13 @@ variable "ServiceName" {
 
 variable "FwFQDN" {
     value "[\"fwfqdn\"]" {}
+}
+
+variable "FQDN" {
+    value "bender.local" {
+        prompt {
+            description = ""
+            label = ""
+        }
+    }
 }
