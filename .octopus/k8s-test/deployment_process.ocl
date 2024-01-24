@@ -8,7 +8,7 @@ step "deploy-kubernetes-containers" {
         action_type = "Octopus.KubernetesDeployContainers"
         properties = {
             Octopus.Action.EnabledFeatures = "Octopus.Features.KubernetesService,Octopus.Features.KubernetesIngress,Octopus.Features.KubernetesConfigMap,Octopus.Features.KubernetesSecret,Octopus.Features.KubernetesCustomResource"
-            Octopus.Action.Kubernetes.DeploymentTimeout = "180"
+            Octopus.Action.Kubernetes.DeploymentTimeout = "280"
             Octopus.Action.Kubernetes.ResourceStatusCheck = "True"
             Octopus.Action.KubernetesContainers.ConfigMapName = "#{Octopus.Project.Name}"
             Octopus.Action.KubernetesContainers.ConfigMapValues = "{}"
