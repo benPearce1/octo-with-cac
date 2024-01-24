@@ -33,7 +33,6 @@ step "deploy-kubernetes-containers" {
             Octopus.Action.KubernetesContainers.ConfigMapName = "#{Octopus.Project.Name}"
             Octopus.Action.KubernetesContainers.ConfigMapValues = "{}"
             Octopus.Action.KubernetesContainers.HostAliases = "[]"
-            Octopus.Action.KubernetesContainers.PodManagementPolicy = "OrderedReady"
             Octopus.Action.KubernetesContainers.RevisionHistoryLimit = "10"
         }
         worker_pool_variable = ""
