@@ -1,0 +1,158 @@
+step "deploy-kubernetes-containers" {
+    name = "Deploy Kubernetes containers"
+    properties = {
+        Octopus.Action.TargetRoles = "k8s"
+    }
+
+    action {
+        action_type = "Octopus.KubernetesDeployContainers"
+        properties = {
+            Octopus.Action.EnabledFeatures = "Octopus.Features.KubernetesService,Octopus.Features.KubernetesIngress,Octopus.Features.KubernetesConfigMap,Octopus.Features.KubernetesSecret,Octopus.Features.KubernetesCustomResource"
+            Octopus.Action.Kubernetes.DeploymentTimeout = "280"
+            Octopus.Action.Kubernetes.ResourceStatusCheck = "True"
+            Octopus.Action.KubernetesContainers.ConfigMapName = "#{Octopus.Project.Name}"
+            Octopus.Action.KubernetesContainers.ConfigMapValues = "{}"
+            Octopus.Action.KubernetesContainers.Containers = "[{\"Name\":\"hello\",\"Ports\":[],\"EnvironmentVariables\":[],\"SecretEnvironmentVariables\":[],\"ConfigMapEnvironmentVariables\":[],\"FieldRefEnvironmentVariables\":[],\"ConfigMapEnvFromSource\":[],\"SecretEnvFromSource\":[],\"VolumeMounts\":[],\"Resources\":{\"requests\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"},\"limits\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"}},\"LivenessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"ReadinessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"StartupProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"Command\":[],\"Args\":[],\"SecurityContext\":{\"allowPrivilegeEscalation\":\"\",\"privileged\":\"\",\"readOnlyRootFilesystem\":\"\",\"runAsGroup\":\"\",\"runAsNonRoot\":\"\",\"runAsUser\":\"\",\"capabilities\":{\"add\":[],\"drop\":[]},\"seLinuxOptions\":{\"level\":\"\",\"role\":\"\",\"type\":\"\",\"user\":\"\"}},\"TerminationMessagePath\":\"\",\"TerminationMessagePolicy\":\"\",\"Lifecycle\":{\"PreStop\":null,\"PostStart\":null},\"CreateFeedSecrets\":\"True\"}]"
+            Octopus.Action.KubernetesContainers.CustomResourceYaml = <<-EOT
+                apiVersion: monitoring.coreos.com/v1
+                kind: ServiceMonitor
+                metadata:
+                  labels:
+                    metrics-type: services
+                  name: '#{ServiceName | ToLower}'
+                  namespace: '#{Namespace}'
+                spec:
+                  endpoints:
+                  - honorLabels: true
+                    interval: 60s
+                    path: /metrics
+                    scheme: http
+                    port: http
+                  namespaceSelector:
+                    matchNames:
+                    - '#{Namespace}'
+                  selector:
+                    matchLabels:
+                      Octopus.Kubernetes.DeploymentName: #{ServiceName | ToLower}
+                ---
+                apiVersion: v1
+                kind: ConfigMap
+                metadata:
+                  name: '#{ServiceName | ToLower}'
+                  namespace: '#{Namespace}'
+                data:
+                #{each var in Env}
+                  #{var}: "#{var.Value}"
+                #{/each}
+                ---
+                apiVersion: v1
+                kind: Secret
+                metadata:
+                  name: '#{ServiceName | ToLower}'
+                  namespace: '#{Namespace}'
+                data:
+                #{each var in Sec}
+                  #{var}: "#{var.Value | ToBase64}"
+                #{/each}
+                ---
+                apiVersion: cilium.io/v2
+                kind: CiliumNetworkPolicy
+                metadata:
+                  name: '#{ServiceName | ToLower}'
+                  namespace: '#{Namespace}'
+                spec:
+                  endpointSelector:
+                    matchLabels:
+                      Octopus.Kubernetes.DeploymentName: #{ServiceName | ToLower}
+                      Octopus.Deployment.Id: #{Octopus.Deployment.Id}
+                  egress:
+                #{each var in FwFQDN}
+                    - toFQDNs:
+                #{each fqdn in var.Value}
+                        - matchName: #{fqdn}
+                #{/each}
+                      toPorts:
+                        - ports:
+                            - port: "#{var}"
+                              protocol: TCP
+                 #{/each}
+                    - toServices:
+                        - k8sServiceSelector:
+                            selector:
+                              matchExpressions:
+                                - key: Octopus.Kubernetes.DeploymentName
+                                  operator: Exists
+                                  values: []
+                            namespace: "*"
+                    - toEndpoints:
+                        - matchLabels:
+                            io.kubernetes.pod.namespace: kube-system
+                            k8s-app: kube-dns
+                      toPorts:
+                        - ports:
+                            - port: "53"
+                              protocol: UDP
+                          rules:
+                            dns:
+                              - matchPattern: "*"
+                #{if HPAEnabled}
+                ---
+                apiVersion: autoscaling/v2
+                kind: HorizontalPodAutoscaler
+                metadata:
+                  name: '#{ServiceName | ToLower}'
+                  namespace: '#{Namespace}'
+                spec:
+                  scaleTargetRef:
+                    apiVersion: apps/v1
+                    kind: Deployment
+                    name: #{ServiceName | ToLower}
+                  minReplicas: 2
+                  maxReplicas: 10
+                  metrics:
+                  - type: Resource
+                    resource:
+                      name: cpu
+                      target:
+                        type: Utilization
+                        averageUtilization: 50
+                #{/if}
+                EOT
+            Octopus.Action.KubernetesContainers.DeploymentName = "#{ServiceName | ToLower}"
+            Octopus.Action.KubernetesContainers.DeploymentResourceType = "Deployment"
+            Octopus.Action.KubernetesContainers.DeploymentStyle = "RollingUpdate"
+            Octopus.Action.KubernetesContainers.DeploymentWait = "NoWait"
+            Octopus.Action.KubernetesContainers.HostAliases = "[]"
+            Octopus.Action.KubernetesContainers.IngressAnnotations = "[]"
+            Octopus.Action.KubernetesContainers.IngressClassName = "nginx"
+            Octopus.Action.KubernetesContainers.IngressName = "#{ServiceName | ToLower}"
+            Octopus.Action.KubernetesContainers.IngressRules = "[{\"host\":\"#{FQDN}\",\"http\":{\"paths\":[{\"key\":\"/\",\"value\":\"http\",\"option\":\"\",\"option2\":\"ImplementationSpecific\"}]}}]"
+            Octopus.Action.KubernetesContainers.LoadBalancerAnnotations = "[{\"key\":\"prometheus/scrape\",\"keyError\":null,\"value\":\"true\",\"valueError\":null,\"option\":\"\",\"optionError\":null,\"option2\":\"\",\"option2Error\":null}]"
+            Octopus.Action.KubernetesContainers.Namespace = "#{Namespace}"
+            Octopus.Action.KubernetesContainers.NodeAffinity = "[]"
+            Octopus.Action.KubernetesContainers.PersistentVolumeClaims = "[]"
+            Octopus.Action.KubernetesContainers.PodAffinity = "[]"
+            Octopus.Action.KubernetesContainers.PodManagementPolicy = "OrderedReady"
+            Octopus.Action.KubernetesContainers.Replicas = "2"
+            Octopus.Action.KubernetesContainers.RevisionHistoryLimit = "10"
+            Octopus.Action.KubernetesContainers.ServiceName = "#{ServiceName|ToLower}"
+            Octopus.Action.KubernetesContainers.ServiceNameType = "External"
+            Octopus.Action.KubernetesContainers.ServicePorts = "[{\"name\":\"http\",\"port\":\"5000\",\"targetPort\":\"http\",\"nodePort\":\"\",\"protocol\":\"TCP\"}]"
+            Octopus.Action.KubernetesContainers.ServiceType = "ClusterIP"
+            Octopus.Action.KubernetesContainers.Tolerations = "[]"
+            Octopus.Action.RunOnServer = "false"
+        }
+        worker_pool_variable = ""
+
+        packages "hello" {
+            acquisition_location = "NotAcquired"
+            feed = "docker"
+            package_id = "hello-world"
+            properties = {
+                Extract = "False"
+                PackageParameterName = ""
+                SelectionMode = "immediate"
+            }
+        }
+    }
+}
