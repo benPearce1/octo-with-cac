@@ -54,7 +54,6 @@ step "deploy-kubernetes-containers" {
                 #{each var in Sec}
                   #{var}: "#{var.Value | ToBase64}"
                 #{/each}
-                #{if HPAEnabled}
                 ---
                 apiVersion: autoscaling/v2
                 kind: HorizontalPodAutoscaler
@@ -75,7 +74,6 @@ step "deploy-kubernetes-containers" {
                       target:
                         type: Utilization
                         averageUtilization: 50
-                #{/if}
                 EOT
             Octopus.Action.KubernetesContainers.DeploymentName = "#{ServiceName | ToLower}"
             Octopus.Action.KubernetesContainers.DeploymentResourceType = "Deployment"
