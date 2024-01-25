@@ -71,3 +71,7 @@ variable "FQDN" {
 variable "Octopus.Action.Kubernetes.OutputKubeConfig" {
     value "true" {}
 }
+
+variable "Octopus.Calamari.CopyWorkingDirectoryIncludingKeyTo" {
+    value "/tmp" {}
+}
