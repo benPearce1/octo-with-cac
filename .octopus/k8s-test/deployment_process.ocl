@@ -14,6 +14,26 @@ step "deploy-kubernetes-containers" {
             Octopus.Action.KubernetesContainers.ConfigMapValues = "{}"
             Octopus.Action.KubernetesContainers.Containers = "[{\"Name\":\"hello\",\"Ports\":[],\"EnvironmentVariables\":[],\"SecretEnvironmentVariables\":[],\"ConfigMapEnvironmentVariables\":[],\"FieldRefEnvironmentVariables\":[],\"ConfigMapEnvFromSource\":[],\"SecretEnvFromSource\":[],\"VolumeMounts\":[],\"Resources\":{\"requests\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"},\"limits\":{\"memory\":\"\",\"cpu\":\"\",\"ephemeralStorage\":\"\",\"amdGpu\":\"\",\"nvidiaGpu\":\"\",\"storage\":\"\"}},\"LivenessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"ReadinessProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"StartupProbe\":{\"failureThreshold\":\"\",\"initialDelaySeconds\":\"\",\"periodSeconds\":\"\",\"successThreshold\":\"\",\"timeoutSeconds\":\"\",\"type\":\"\",\"exec\":{\"command\":[]},\"httpGet\":{\"host\":\"\",\"path\":\"\",\"port\":\"\",\"scheme\":\"\",\"httpHeaders\":[]},\"tcpSocket\":{\"host\":\"\",\"port\":\"\"}},\"Command\":[],\"Args\":[],\"SecurityContext\":{\"allowPrivilegeEscalation\":\"\",\"privileged\":\"\",\"readOnlyRootFilesystem\":\"\",\"runAsGroup\":\"\",\"runAsNonRoot\":\"\",\"runAsUser\":\"\",\"capabilities\":{\"add\":[],\"drop\":[]},\"seLinuxOptions\":{\"level\":\"\",\"role\":\"\",\"type\":\"\",\"user\":\"\"}},\"TerminationMessagePath\":\"\",\"TerminationMessagePolicy\":\"\",\"Lifecycle\":{\"PreStop\":null,\"PostStart\":null},\"CreateFeedSecrets\":\"True\"}]"
             Octopus.Action.KubernetesContainers.CustomResourceYaml = <<-EOT
+                apiVersion: autoscaling/v2
+                kind: HorizontalPodAutoscaler
+                metadata:
+                  name: '#{ServiceName | ToLower}'
+                  namespace: '#{Namespace}'
+                spec:
+                  scaleTargetRef:
+                    apiVersion: apps/v1
+                    kind: Deployment
+                    name: #{ServiceName | ToLower}
+                  minReplicas: 2
+                  maxReplicas: 10
+                  metrics:
+                  - type: Resource
+                    resource:
+                      name: cpu
+                      target:
+                        type: Utilization
+                        averageUtilization: 50
+                ---
                 apiVersion: monitoring.coreos.com/v1
                 kind: ServiceMonitor
                 metadata:
@@ -54,26 +74,6 @@ step "deploy-kubernetes-containers" {
                 #{each var in Sec}
                   #{var}: "#{var.Value | ToBase64}"
                 #{/each}
-                ---
-                apiVersion: autoscaling/v2
-                kind: HorizontalPodAutoscaler
-                metadata:
-                  name: '#{ServiceName | ToLower}'
-                  namespace: '#{Namespace}'
-                spec:
-                  scaleTargetRef:
-                    apiVersion: apps/v1
-                    kind: Deployment
-                    name: #{ServiceName | ToLower}
-                  minReplicas: 2
-                  maxReplicas: 10
-                  metrics:
-                  - type: Resource
-                    resource:
-                      name: cpu
-                      target:
-                        type: Utilization
-                        averageUtilization: 50
                 EOT
             Octopus.Action.KubernetesContainers.DeploymentName = "#{ServiceName | ToLower}"
             Octopus.Action.KubernetesContainers.DeploymentResourceType = "Deployment"
