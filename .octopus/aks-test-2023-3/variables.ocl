@@ -34,15 +34,6 @@ variable "Namespace" {
     }
 }
 
-variable "FQDN" {
-    value "fqdn-#{Octopus.Deployment.Id}" {
-        prompt {
-            description = ""
-            label = ""
-        }
-    }
-}
-
 variable "HPAEnabled" {
     value "true" {
         prompt {
@@ -55,8 +46,12 @@ variable "HPAEnabled" {
     }
 }
 
-variable "ServiceName" {
-    value "service-1" {
+variable "FwFQDN" {
+    value "[\"fwfqdn\"]" {}
+}
+
+variable "FQDN" {
+    value "fqdn-#{Octopus.Deployment.Id | ToLower}" {
         prompt {
             description = ""
             label = ""
@@ -64,6 +59,11 @@ variable "ServiceName" {
     }
 }
 
-variable "FwFQDN" {
-    value "[\"fwfqdn\"]" {}
+variable "ServiceName" {
+    value "service-2" {
+        prompt {
+            description = ""
+            label = ""
+        }
+    }
 }
