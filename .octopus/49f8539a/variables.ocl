@@ -60,3 +60,14 @@ variable "prompted variable" {
         process = ["runbook/blah"]
     }
 }
+
+variable "Octopus.ServiceNow[priority]" {
+    value "high" {
+        environment = ["production"]
+    }
+
+    value "low" {
+        description = ""
+        environment = ["staging"]
+    }
+}
