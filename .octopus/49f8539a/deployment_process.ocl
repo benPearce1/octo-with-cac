@@ -8,7 +8,13 @@ step "step1-49f8539a-eb71-441d-ab19-19e55ab4ec29" {
             Octopus.Action.Script.ScriptBody = "echo #{test}"
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
+            OctopusUseBundledTooling = "False"
         }
         worker_pool = "default-worker-pool"
+
+        container {
+            feed = "docker"
+            image = "octopusdeploy/worker-tools:6.1.1-ubuntu.22.04"
+        }
     }
 }
