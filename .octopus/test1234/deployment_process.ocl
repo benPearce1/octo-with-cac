@@ -11,3 +11,19 @@ step "run-a-script" {
         worker_pool = "dyn"
     }
 }
+
+step "step-template" {
+    name = "step template"
+    properties = {
+        Octopus.Action.TargetRoles = "role 1"
+    }
+
+    action {
+        properties = {
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Template.Id = "ActionTemplates-21"
+            Octopus.Action.Template.Version = "0"
+        }
+        worker_pool_variable = ""
+    }
+}
