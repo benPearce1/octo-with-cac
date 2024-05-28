@@ -73,5 +73,7 @@ variable "Octopus.ServiceNow[priority]" {
 }
 
 variable "new var" {
-    value "value" {}
+    value "value" {
+        environment = ["development"]
+    }
 }
